@@ -4,12 +4,11 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Dejar pasar todo lo que no sea admin
   if (!pathname.startsWith("/admin")) {
     return NextResponse.next();
   }
 
-  // IMPORTANTE: permitir la página de login
+  // dejar pasar login
   if (pathname === "/admin/login") {
     return NextResponse.next();
   }
