@@ -160,13 +160,13 @@ export default function AdminPage() {
   const [dragOverCell, setDragOverCell] = useState<string | null>(null);
 
   async function handleLogout() {
-    await fetch("/api/admin/logout", {
-      method: "POST",
-    });
+  await fetch("/api/admin/logout", {
+    method: "POST",
+    cache: "no-store",
+  });
 
-    router.push("/admin/login");
-    router.refresh();
-  }
+  window.location.href = "/admin/login";
+}
 
   async function fetchSchedule(targetDate: string) {
     setLoading(true);
