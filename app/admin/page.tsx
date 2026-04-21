@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Entry = {
   id: number;
@@ -132,6 +133,8 @@ function weekdayLabel(dateStr: string) {
 }
 
 export default function AdminPage() {
+  const router = useRouter();
+
   const [date, setDate] = useState(() => {
     const now = new Date();
     const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
@@ -155,6 +158,15 @@ export default function AdminPage() {
 
   const [draggedReservationId, setDraggedReservationId] = useState<number | null>(null);
   const [dragOverCell, setDragOverCell] = useState<string | null>(null);
+
+  async function handleLogout() {
+    await fetch("/api/admin/logout", {
+      method: "POST",
+    });
+
+    router.push("/admin/login");
+    router.refresh();
+  }
 
   async function fetchSchedule(targetDate: string) {
     setLoading(true);
@@ -387,15 +399,25 @@ export default function AdminPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-white/10 px-4 py-3">
-              <div className="text-xs uppercase tracking-wide text-white/70">Reservas</div>
-              <div className="mt-1 text-2xl font-black">{totalReservations}</div>
+          <div className="flex flex-col items-start gap-3 md:items-end">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-white/10 px-4 py-3">
+                <div className="text-xs uppercase tracking-wide text-white/70">Reservas</div>
+                <div className="mt-1 text-2xl font-black">{totalReservations}</div>
+              </div>
+              <div className="rounded-2xl bg-white/10 px-4 py-3">
+                <div className="text-xs uppercase tracking-wide text-white/70">Ingreso</div>
+                <div className="mt-1 text-2xl font-black">${totalRevenue}</div>
+              </div>
             </div>
-            <div className="rounded-2xl bg-white/10 px-4 py-3">
-              <div className="text-xs uppercase tracking-wide text-white/70">Ingreso</div>
-              <div className="mt-1 text-2xl font-black">${totalRevenue}</div>
-            </div>
+
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-4 py-2 font-semibold text-white transition hover:bg-white/15"
+            >
+              <LogOut className="h-4 w-4" />
+              Cerrar sesión
+            </button>
           </div>
         </div>
       </section>
