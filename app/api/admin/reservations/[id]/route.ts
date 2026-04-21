@@ -51,7 +51,13 @@ export async function GET(
           guestCount: reservation.guestCount,
         },
       },
-      bays: bays.map((bay) => ({
+      bays: bays.map((bay: {
+        id: number;
+        code: string;
+        name: string;
+        basePrice: number;
+        capacity: number;
+      }) => ({
         id: bay.id,
         code: bay.code,
         name: bay.name,
