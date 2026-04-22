@@ -592,10 +592,10 @@ async function handleLogout() {
                           setDraggedReservationId(null);
                           setDragOverCell(null);
                         }}
-                        className={`absolute left-3 right-3 rounded-2xl border p-3 shadow-[0_10px_24px_rgba(21,32,24,0.08)] ${
-                          draggable ? "cursor-move" : "cursor-default opacity-80"
-                        } ${statusClass(entry.status)}`}
-                        style={{ top: `${top + 6}px`, height: `${height - 4}px` }}
+                        className={`absolute left-2 right-2 overflow-y-auto rounded-2xl border p-2 shadow-[0_10px_24px_rgba(21,32,24,0.08)] ${
+  draggable ? "cursor-move" : "cursor-default opacity-80"
+} ${statusClass(entry.status)}`}
+style={{ top: `${top + 4}px`, height: `${height - 8}px` }}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
@@ -624,34 +624,41 @@ async function handleLogout() {
                           ${entry.totalAmount}
                         </div>
 
-                        <div className="mt-3 grid grid-cols-2 gap-2">
+                        <div className="mt-2 flex flex-wrap gap-1.5">
                           <button onClick={() => openEdit(entry.id)} className="rounded-xl bg-white px-2 py-1.5 text-xs font-bold text-[#1f5c3f]">
                             {editLoading ? "..." : "Editar"}
                           </button>
 
                           <button
-                            onClick={() => runAction(entry.id, "check-in")}
-                            disabled={isCancelled || isNoShow || isCompleted}
-                            className="rounded-xl bg-[#1f5c3f] px-2 py-1.5 text-xs font-bold text-white disabled:opacity-40"
-                          >
-                            Check-in
-                          </button>
+  onClick={() => openEdit(entry.id)}
+  className="min-w-[72px] flex-1 rounded-lg bg-white px-2 py-1 text-[11px] font-bold text-[#1f5c3f]"
+>
+  {editLoading ? "..." : "Editar"}
+</button>
 
-                          <button
-                            onClick={() => runAction(entry.id, "no-show")}
-                            disabled={isCancelled || isNoShow || isCompleted}
-                            className="rounded-xl bg-amber-500 px-2 py-1.5 text-xs font-bold text-white disabled:opacity-40"
-                          >
-                            No-show
-                          </button>
+<button
+  onClick={() => runAction(entry.id, "check-in")}
+  disabled={isCancelled || isNoShow || isCompleted}
+  className="min-w-[72px] flex-1 rounded-lg bg-[#1f5c3f] px-2 py-1 text-[11px] font-bold text-white disabled:opacity-40"
+>
+  Check-in
+</button>
 
-                          <button
-                            onClick={() => runAction(entry.id, "cancel")}
-                            disabled={isCancelled || isCompleted}
-                            className="rounded-xl bg-red-500 px-2 py-1.5 text-xs font-bold text-white disabled:opacity-40"
-                          >
-                            Cancelar
-                          </button>
+<button
+  onClick={() => runAction(entry.id, "no-show")}
+  disabled={isCancelled || isNoShow || isCompleted}
+  className="min-w-[72px] flex-1 rounded-lg bg-amber-500 px-2 py-1 text-[11px] font-bold text-white disabled:opacity-40"
+>
+  No-show
+</button>
+
+<button
+  onClick={() => runAction(entry.id, "cancel")}
+  disabled={isCancelled || isCompleted}
+  className="min-w-[72px] flex-1 rounded-lg bg-red-500 px-2 py-1 text-[11px] font-bold text-white disabled:opacity-40"
+>
+  Cancelar
+</button>
                         </div>
                       </div>
                     );
