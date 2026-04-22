@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Users, Clock3, MapPin, Star } from "lucide-react";
 
 type AvailableBay = {
   code: "B1" | "B2" | "B3" | "B4" | "B19";
@@ -15,6 +15,28 @@ const timeSlots = [
   "10:00","11:00","12:00","13:00","14:00","15:00",
   "16:00","17:00","18:00","19:00","20:00","21:00","22:00"
 ];
+
+function getBayAccent(type: "standard" | "vip") {
+  if (type === "vip") {
+    return {
+      badge: "bg-amber-100 text-amber-700 border-amber-200",
+      ring: "border-amber-300/40",
+      bg: "from-amber-50 to-white",
+      chip: "bg-amber-50 text-amber-700",
+      icon: "text-amber-600",
+      label: "VIP",
+    };
+  }
+
+  return {
+    badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    ring: "border-emerald-300/40",
+    bg: "from-emerald-50 to-white",
+    chip: "bg-emerald-50 text-emerald-700",
+    icon: "text-emerald-600",
+    label: "Standard",
+  };
+}
 
 export default function ReservePage() {
   const [date, setDate] = useState(() => {
@@ -150,7 +172,7 @@ export default function ReservePage() {
           Reserva tu bahía
         </h1>
         <p className="mt-3 max-w-2xl text-sm text-white/85 md:text-base">
-          Un flujo más limpio, más claro y más agradable para cerrar reservas.
+          Elige fecha, hora y bahía disponible para cerrar la reservación en minutos.
         </p>
       </section>
 
@@ -240,36 +262,78 @@ export default function ReservePage() {
           <section className="space-y-4">
             {availableBays.map((bay) => {
               const isSelected = selectedBay?.code === bay.code;
+              const accent = getBayAccent(bay.type);
 
               return (
                 <button
                   key={bay.code}
                   type="button"
                   onClick={() => setSelectedBay(bay)}
-                  className={`w-full rounded-[24px] border p-5 text-left transition ${
+                  className={`group relative w-full overflow-hidden rounded-[28px] border bg-gradient-to-br p-0 text-left transition ${
                     isSelected
-                      ? "border-[#1f5c3f] bg-[#eef7eb]"
-                      : "border-[rgba(31,92,63,0.10)] bg-white hover:bg-[#f7fbf5]"
+                      ? `${accent.ring} shadow-[0_18px_40px_rgba(21,32,24,0.12)]`
+                      : "border-[rgba(31,92,63,0.10)] shadow-[0_12px_28px_rgba(21,32,24,0.06)] hover:-translate-y-[1px] hover:shadow-[0_18px_36px_rgba(21,32,24,0.10)]"
                   }`}
-                  style={{ boxShadow: "var(--bunker-shadow)" }}
                 >
-                  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${accent.bg}`} />
+
+                  <div className="relative grid gap-5 p-5 md:grid-cols-[1fr_auto] md:items-center">
                     <div>
-                      <div className="text-2xl font-black tracking-tight text-[#1f5c3f]">{bay.code}</div>
-                      <div className="text-sm bunker-muted">{bay.name}</div>
-                      <div className="mt-2 text-sm text-[#617264]">
-                        {bay.type} · {bay.capacity} personas
+                      <div className="flex flex-wrap items-center gap-3">
+                        <div className="text-3xl font-black tracking-tight text-[#1f5c3f]">
+                          {bay.code}
+                        </div>
+
+                        <div className={`rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] ${accent.badge}`}>
+                          {accent.label}
+                        </div>
+
+                        {isSelected ? (
+                          <div className="rounded-full border border-[#1f5c3f]/15 bg-[#edf7ea] px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-[#1f5c3f]">
+                            Seleccionada
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <div className="mt-2 text-base font-semibold text-[#243328]">
+                        {bay.name}
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <div className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium ${accent.chip}`}>
+                          <Users className={`h-4 w-4 ${accent.icon}`} />
+                          {bay.capacity} personas
+                        </div>
+
+                        <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 text-sm font-medium text-[#48604f]">
+                          <Clock3 className="h-4 w-4 text-[#1f5c3f]" />
+                          Reserva por hora
+                        </div>
+
+                        <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 text-sm font-medium text-[#48604f]">
+                          <MapPin className="h-4 w-4 text-[#1f5c3f]" />
+                          Bunker 19
+                        </div>
                       </div>
                     </div>
 
-                    <div className="text-left md:text-right">
-                      <div className="text-2xl font-black text-[#152018]">${bay.price}</div>
-                      <div className="text-sm text-[#617264]">por hora</div>
-                      {isSelected ? (
-                        <div className="mt-2 text-xs font-bold uppercase tracking-wide text-[#1f5c3f]">
-                          Seleccionada
-                        </div>
-                      ) : null}
+                    <div className="min-w-[180px] rounded-[22px] border border-white/60 bg-white/80 p-4 text-left shadow-[0_10px_24px_rgba(21,32,24,0.06)] md:text-right">
+                      <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#738277]">
+                        Tarifa
+                      </div>
+
+                      <div className="mt-1 text-3xl font-black text-[#1f2a21]">
+                        ${bay.price}
+                      </div>
+
+                      <div className="text-sm text-[#728076]">
+                        por hora
+                      </div>
+
+                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#1f5c3f]">
+                        <Star className="h-4 w-4" />
+                        {bay.type === "vip" ? "Experiencia premium" : "Ideal para grupos"}
+                      </div>
                     </div>
                   </div>
                 </button>
